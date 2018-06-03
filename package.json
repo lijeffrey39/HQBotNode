@@ -1,0 +1,16 @@
+{
+  "name": "HQBot",
+  "version": "0.0.0",
+  "description": "HQBot with python",
+  "main": "index.js",
+  "author": "Grant Timmerman",
+  "private": true,
+  "license": "BSD",
+  "dependencies": {
+    "express": "4.13.4",
+    "socket.io": "2.1.1"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}

@@ -1,0 +1,382 @@
+<html>
+<head>
+	<title>HQ Bot</title>
+</head>
+<link rel="stylesheet" href="assets/devices.min.css" type="text/css">
+<link rel="stylesheet" href="assets/style.css" type="text/css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/hybrid.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js"></script>
+<body>
+
+<header>
+	<div class="wrap">
+		<h1>HQBot</h1>
+		<!-- <p>We've created several minimal iPhone, Android, Lumia and iPad devices in pure CSS to showcase the prototypes our users make on <a href="https://marvelapp.com/">Marvel</a>. Made with love by <a href="http://twitter.com/olegtsaplin">Oleg</a>.</p>
+		<p><span>Update</span>: Brand new iPhone X and Samsung Galaxy Note 8. Just include <span class="devices">devices.min.css</span> and grab the code below!</p> -->
+		<!-- <a class="button download" href="https://github.com/marvelapp/devices.css">Download on Github</a> -->
+	</div>
+</header>
+
+<section id="iphone-x" class="silver">
+	<h1 class="online new" id = "new">Online: </h1>
+	<div class="wrap" id = "wrapp">
+
+		<div class="circle-loader">
+		  <div class="checkmark draw"></div>
+		</div>
+
+		<h1 id = "question">Next Game in:</h1>
+
+		<!-- <h1 id = "Timer" class = "timer"></h1> -->
+
+		<p id = "roundCorner"></p>
+		<p id = "roundCorner2"></p>
+		<p id = "roundCorner3"></p>
+		<p id = "roundCorner4"></p>
+
+
+		<h1 class = "c1" align = "left" id = "c1"></h1>
+		<h1 class = "c2" align = "left" id = "c2"></h1>
+		<h1 class = "c3" align = "left" id = "c3"></h1>
+
+		<h1 class = "n1" align = "right" id = "n1">0</h1>
+		<h1 class = "n2" align = "right" id = "n2">0</h1>
+		<h1 class = "n3" align = "right" id = "n3">0</h1>
+
+		<h1 class = "s1" align = "right" id = "s1">/</h1>
+		<h1 class = "s2" align = "right" id = "s2">/</h1>
+		<h1 class = "s3" align = "right" id = "s3">/</h1>
+
+		<h1 class = "v1" align = "left" id = "v1">0</h1>
+		<h1 class = "v2" align = "left" id = "v2">0</h1>
+		<h1 class = "v3" align = "left" id = "v3">0</h1>
+
+		<a class="buttonRoundCorner c1" id = "roundc1" align = "center"></a>
+		<a class="buttonRoundCorner c2" id = "roundc2" align = "center"></a>
+		<a class="buttonRoundCorner c3" id = "roundc3" align = "center"></a>
+
+		<a class="button download" align = "center" href="https://github.com/lijeffrey39/HQBot">View on Github</a>
+		<h1 class = "info" id = "info" align = "center">Once the game begins, the most likely answer will show up with a given score.
+			The answer chosen is correct about 75% of the time. With voting, you can view what other people think as well.
+			</h1>
+		<p class = "info">*Created using Node.js, Socket.io, Google Vision, Google NLP, and Python.</p>
+		<div class="marvel-device iphone-x">
+			<div class="notch">
+				<div class="camera"></div>
+				<div class="speaker"></div>
+			</div>
+			<div class="top-bar"></div>
+			<div class="sleep"></div>
+			<div class="bottom-bar"></div>
+			<div class="volume"></div>
+			<div class="overflow">
+				<div class="shadow shadow--tr"></div>
+				<div class="shadow shadow--tl"></div>
+				<div class="shadow shadow--br"></div>
+				<div class="shadow shadow--bl"></div>
+			</div>
+			<div class="inner-shadow"></div>
+			<div class="screen"></div>
+		</div>
+	</div>
+
+	<div class="overlay">
+		<div class="table">
+			<div class="cell">
+				<div class="modal">
+					<p>To use this pure CSS iPhone X, download &amp; include <span class="devices">devices.min.css</span> from <a href="https://github.com/marvelapp/devices.css">Github</a>, and paste the code below into your page.</p>
+					<pre>
+						<code class="html">
+&lt;link rel="stylesheet" href="devices.min.css" type="text/css">
+						</code>
+					</pre>
+					<pre>
+					<code class="html">&lt;div class="marvel-device iphone-x<span class="orientation"></span>">
+    &lt;div class="notch">
+        &lt;div class="camera">&lt;/div>
+        &lt;div class="speaker">&lt;/div>
+    &lt;/div>
+    &lt;div class="top-bar">&lt;/div>
+    &lt;div class="sleep">&lt;/div>
+    &lt;div class="bottom-bar">&lt;/div>
+    &lt;div class="volume">&lt;/div>
+    &lt;div class="overflow">
+        &lt;div class="shadow shadow--tr">&lt;/div>
+        &lt;div class="shadow shadow--tl">&lt;/div>
+        &lt;div class="shadow shadow--br">&lt;/div>
+        &lt;div class="shadow shadow--bl">&lt;/div>
+    &lt;/div>
+    &lt;div class="inner-shadow">&lt;/div>
+    &lt;div class="screen">
+        &lt;!-- Content goes here -->
+    &lt;/div>
+&lt;/div></code>
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</section>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  $(function () {
+    var socket = io();
+		question = null;
+		answer = null;
+		voted = false;
+		newAns = false;
+		showTimer = false;
+
+
+
+		socket.on('update timer', (data) => {
+			sec = data;
+			var hours = Math.floor(sec / 3600);
+			var min = Math.floor((sec % 3600) / 60);
+			var sec = Math.floor(sec % 60);
+
+			var hZ = "";
+			var mZ = "";
+			var sZ = "";
+			if (hours < 10) {
+				hZ = "0"
+			}
+			if (min < 10) {
+				mZ = "0"
+			}
+			if (sec < 10) {
+				sZ = "0"
+			}
+			var text = hZ + hours + ":" + mZ + min + ":" + sZ + sec;
+
+			if (showTimer) {
+				document.getElementById("Timer").innerHTML = text;
+			}
+		});
+
+
+
+
+		$('#roundc1').click(function() {
+			if (voted == false) {
+				socket.emit('add vote 1', 1);
+				if (newAns) {
+					displayAns();
+				}
+				voted = true;
+			}
+	  });
+
+		socket.on('added vote 1', (data) => {
+			document.getElementById("v1").innerHTML = data[0];
+		});
+
+		$('#roundc2').click(function() {
+			if (voted == false) {
+				socket.emit('add vote 2', 1);
+				if (newAns) {
+					displayAns();
+				}
+				voted = true;
+			}
+	  });
+
+		socket.on('added vote 2', (data) => {
+			document.getElementById("v2").innerHTML = data[1];
+		});
+
+		$('#roundc3').click(function() {
+			if (voted == false) {
+				socket.emit('add vote 3', 1);
+				if (newAns) {
+					displayAns();
+				}
+				voted = true;
+			}
+	  });
+
+		socket.on('added vote 3', (data) => {
+			if (newAns == true) {
+				document.getElementById("v3").innerHTML = "<font color = 'white'>" + data[2] + "</font>";
+			} else {
+				document.getElementById("v3").innerHTML = data[2];
+			}
+		});
+
+
+		function showAns(data) {
+			option = data.option;
+			points = data.points;
+			choices = data.choices;
+
+			document.getElementById("n1").innerHTML = points[0];
+			document.getElementById("n2").innerHTML = points[1];
+			document.getElementById("n3").innerHTML = points[2];
+
+			var p = document.createElement('p');
+			if (option == 0) {
+				p.setAttribute("id", "roundCornerfilled2");
+				document.getElementById("c1").innerHTML = "<font color = 'white'>" + question.c1 + "</font>";
+				document.getElementById("n1").innerHTML = "<font color = 'white'>" + points[0] + "</font>";
+				document.getElementById("v1").innerHTML = "<font color = 'white'>" + choices[0] + "</font>";
+			} else if (option == 1) {
+				p.setAttribute("id", "roundCornerfilled3");
+				document.getElementById("c2").innerHTML = "<font color = 'white'>" + question.c2 + "</font>";
+				document.getElementById("n2").innerHTML = "<font color = 'white'>" + points[1] + "</font>";
+				document.getElementById("v2").innerHTML = "<font color = 'white'>" + choices[1] + "</font>";
+			} else {
+				p.setAttribute("id", "roundCornerfilled4");
+				document.getElementById("c3").innerHTML = "<font color = 'white'>" + question.c3 + "</font>";
+				document.getElementById("n3").innerHTML = "<font color = 'white'>" + points[2] + "</font>";
+				document.getElementById("v3").innerHTML = "<font color = 'white'>" + choices[2] + "</font>";
+			}
+			document.getElementById('wrapp').appendChild(p);
+		}
+
+
+		function displayAns() {
+			if (answer != null) {
+				data = answer;
+				showAns(data);
+			}
+		}
+
+
+		$('#roundc1').hover(function() {
+	    $('#c1').css('color', 'white');
+	  }, function() {
+	    // on mouseout, reset the background colour
+	    $('#c1').css('color', '#495057');
+	  });
+
+		$('#roundc2').hover(function() {
+	    $('#c2').css('color', 'white');
+	  }, function() {
+	    // on mouseout, reset the background colour
+	    $('#c2').css('color', '#495057');
+	  });
+
+		$('#roundc3').hover(function() {
+	    $('#c3').css('color', 'white');
+	  }, function() {
+	    // on mouseout, reset the background colour
+	    $('#c3').css('color', '#495057');
+	  });
+
+		socket.on('update all user', (data) => {
+			var choices = data.choices;
+			var questionObj = data.questionObj;
+			var numOnline = data.numOnline;
+
+			var parent = document.getElementById("new");
+			parent.setAttribute('data-count', numOnline);
+			document.getElementById("v1").innerHTML = choices[0];
+			document.getElementById("v2").innerHTML = choices[1];
+			document.getElementById("v3").innerHTML = choices[2];
+		});
+
+		socket.on('update user', (data) => {
+			if (data != null){
+				// document.getElementById("question").innerHTML = data.q;
+				document.getElementById("c1").innerHTML = data.c1;
+				document.getElementById("c2").innerHTML = data.c2;
+				document.getElementById("c3").innerHTML = data.c3;
+			}
+		});
+
+
+		socket.on('user disconnect', (data) => {
+			var parent = document.getElementById("new");
+			parent.setAttribute('data-count', data);
+		});
+
+		var first = false;
+		// Whenever the server emits 'new question', update the text
+	  socket.on('add question', (data) => {
+			if (first) {
+				$('.circle-loader').toggleClass('load-complete');
+			  $('.checkmark').toggle();
+			}
+			first = true;
+			console.log(data);
+			question = data;
+			newAns = false;
+	    document.getElementById("question").innerHTML = data.q;
+			document.getElementById("c1").innerHTML = data.c1;
+			document.getElementById("c2").innerHTML = data.c2;
+			document.getElementById("c3").innerHTML = data.c3;
+
+			document.getElementById("n1").innerHTML = 0;
+			document.getElementById("n2").innerHTML = 0;
+			document.getElementById("n3").innerHTML = 0;
+
+			document.getElementById("v1").innerHTML = 0;
+			document.getElementById("v2").innerHTML = 0;
+			document.getElementById("v3").innerHTML = 0;
+
+			var parent = document.getElementById("wrapp");
+			var child = document.getElementById("roundCornerfilled2");
+			var child1 = document.getElementById("roundCornerfilled3");
+			var child2 = document.getElementById("roundCornerfilled4");
+
+			// if (answer != null && voted == true) {
+			// 	option = answer.option;
+			// 	if (option == 0) {
+			// 		parent.removeChild(child);
+			// 	} else if (option == 1) {
+			// 		parent.removeChild(child1);
+			// 	} else {
+			// 		parent.removeChild(child2);
+			// 	}
+			// }
+
+			if (answer != null) {
+				option = answer.option;
+				if (option == 0) {
+					parent.removeChild(child);
+				} else if (option == 1) {
+					parent.removeChild(child1);
+				} else {
+					parent.removeChild(child2);
+				}
+			}
+
+			voted = false;
+	  });
+
+		socket.on('add answer', data => {
+			$('.circle-loader').toggleClass('load-complete');
+		  $('.checkmark').toggle();
+			console.log(data);
+			answer = data;
+			newAns = true;
+			showAns(data);
+			// if (voted == true) {
+			// 	showAns(data);
+			// }
+		});
+
+  });
+</script>
+
+</body>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="assets/main.min.js"></script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-38711157-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+</html>
